@@ -1,0 +1,72 @@
+package(default_visibility = ["//visibility:private"])
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+PACKAGE = "ru.rma.apps.research.project.synchronization"
+
+MANIFEST = "src/main/AndroidManifest.xml"
+
+android_binary(
+    name = "app",
+    custom_package = PACKAGE,
+    manifest = MANIFEST,
+    deps = [
+        ":lib",
+    ],
+)
+
+kt_android_library(
+    name = "lib",
+    srcs = glob(["src/main/java/**"]),
+    custom_package = PACKAGE,
+    manifest = MANIFEST,
+    resource_files = glob(["src/main/res/**"]),
+    deps = [
+        artifact("androidx.appcompat:appcompat"),
+        artifact("androidx.constraintlayout:constraintlayout"),
+        artifact("androidx.core:core-ktx"),
+        artifact("androidx.lifecycle:lifecycle-common"),
+        artifact("androidx.lifecycle:lifecycle-viewmodel"),
+        artifact("com.google.android.material:material"),
+    ],
+)
+
+android_instrumentation_test(
+    name = "app_instrumentation_test",
+    target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_28_x86",
+    test_app = ":app_test",
+)
+
+android_binary(
+    name = "app_test",
+    custom_package = PACKAGE,
+    instruments = "app",
+    manifest = "src/androidTest/AndroidManifest.xml",
+    deps = [
+        ":lib_test",
+    ],
+)
+
+kt_android_library(
+    name = "lib_test",
+    srcs = glob(["src/androidTest/java/**"]),
+    custom_package = PACKAGE,
+    manifest = "src/androidTest/AndroidManifest.xml",
+    deps = [
+        ":lib",
+        artifact("junit:junit"),
+        artifact("androidx.test.ext:junit"),
+        artifact("androidx.test.espresso:espresso-core"),
+    ],
+)
+
+kt_jvm_test(
+    name = "app_jvm_test",
+    srcs = glob(["src/test/java/**"]),
+    test_class = "ru.rma.apps.research.project.synchronization.ExampleUnitTest",
+    deps = [
+        artifact("junit:junit"),
+    ],
+)
