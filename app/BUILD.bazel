@@ -6,12 +6,10 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 
 PACKAGE = "ru.rma.apps.research.project.synchronization"
 
-MANIFEST = "src/main/AndroidManifest.xml"
-
 android_binary(
     name = "app",
     custom_package = PACKAGE,
-    manifest = MANIFEST,
+    manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":lib",
     ],
@@ -21,9 +19,10 @@ kt_android_library(
     name = "lib",
     srcs = glob(["src/main/java/**"]),
     custom_package = PACKAGE,
-    manifest = MANIFEST,
+    manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**"]),
     deps = [
+        "//mylibrary001",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.constraintlayout:constraintlayout"),
         artifact("androidx.core:core-ktx"),
